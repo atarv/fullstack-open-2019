@@ -1,0 +1,5 @@
+@startuml t6_uusi_muistiinpano_spa
+note over asiakas : käyttäjä tekee uuden\nmusitiinpanon ja painaa\n"talleta"
+asiakas -> palvelin : HTTP POST {uusi muistiinpano}
+palvelin --> asiakas : HTTP 201 Created
+@enduml
