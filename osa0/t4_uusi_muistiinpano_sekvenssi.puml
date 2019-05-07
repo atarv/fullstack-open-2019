@@ -1,0 +1,15 @@
+@startuml t4_uusi_muistiinpano_sekvenssi
+note over asiakas : käyttäjä kirjoittaa\nmuistiinpanon ja painaa "talleta"
+asiakas -> palvelin : HTTP POST {muistiinpano}
+palvelin --> asiakas : HTTP 302 Found
+note over palvelin : palvelin ohjaa uudelleen\nsivulle /notes
+asiakas -> palvelin : HTTP GET /notes
+palvelin --> asiakas : HTTP 200 notes.html
+note over asiakas : ladataan html:ssä mainitut tiedostot
+asiakas -> palvelin : HTTP GET main.css
+palvelin --> asiakas : HTTP 200 main.css
+asiakas -> palvelin : HTTP GET main.js
+palvelin --> asiakas : HTTP 200 main.js
+asiakas -> palvelin : HTTP GET data.json
+palvelin --> asiakas : HTTP 200 data.json
+@enduml
