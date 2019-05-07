@@ -1,0 +1,14 @@
+@startuml t5_uusi_muistiinpano_spa
+note over asiakas : käyttäjä menee osoitteeseen\nhttps://fullstack-exampleapp.herokuapp.com/spa
+asiakas -> palvelin : HTTP GET /spa
+palvelin --> asiakas : HTTP 200 OK spa.html
+note over asiakas : ladataan html:ssä mainitut tiedostot
+asiakas -> palvelin : HTTP GET main.css
+palvelin --> asiakas : HTTP 200 OK main.css
+asiakas -> palvelin : HTTP GET spa.js
+palvelin --> asiakas : HTTP 200 OK spa.js
+asiakas -> palvelin : HTTP GET data.json
+palvelin --> asiakas : HTTP 200 OK data.json
+asiakas -> palvelin : HTTP GET favicon.ico
+palvelin --> asiakas : <color red>HTTP 404 Not Found</color>
+@enduml
