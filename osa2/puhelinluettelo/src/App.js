@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
+import personService from './services/persons'
 
 const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
     return (
@@ -11,7 +11,7 @@ const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
                 numero: <input onChange={handleNumero} />
             </div>
             <div>
-                <button type="submit">lisää</button>
+                <button type='submit'>lisää</button>
             </div>
         </form>
     )
@@ -29,10 +29,11 @@ const NamesList = ({ listNames }) => {
     return <ul>{listNames()}</ul>
 }
 
-const Person = ({ person }) => {
+const Person = ({ person, handleDelete }) => {
     return (
-        <li key={person.name}>
+        <li key={person.id}>
             {person.name} {person.number}
+            <button key={'b' + person.id} onClick={() => handleDelete(person)}>poista</button>
         </li>
     )
 }
@@ -45,11 +46,18 @@ const App = () => {
     const listNames = () => {
         return persons.map(person =>
             person.name.toLowerCase().includes(searchString.toLowerCase()) ? (
-                <Person person={person} key={person.name} />
+                <Person person={person} key={person.id} handleDelete={handleDelete} />
             ) : (
                 undefined
             )
         )
+    }
+    const handleDelete = person => {
+        if (!window.confirm(`Poistetaanko ${person.name}?`))
+            return undefined
+        personService.remove(person.id).then(() => {
+            setPersons(persons.filter(p => p.id !== person.id))
+        })
     }
     const handleNimi = event => {
         setNewName(event.target.value)
@@ -62,15 +70,18 @@ const App = () => {
     }
     const handleSubmit = event => {
         event.preventDefault()
+        const newPerson = { name: newName, number: newNumber }
         if (persons.find(p => p.name === newName)) {
             alert(`${newName} on jo olemassa`)
         } else {
-            setPersons(persons.concat({ name: newName, number: newNumber }))
+            personService
+                .post(newPerson)
+                .then(response => setPersons(persons.concat(response.data)))
         }
     }
     const hook = () => {
-        axios.get('http://localhost:3001/persons').then(response => {
-            setPersons(response.data)
+        personService.getAll().then(persons => {
+            setPersons(persons)
         })
     }
 
@@ -83,7 +94,7 @@ const App = () => {
             <h2>Lisää uusi</h2>
             <Form handleNimi={handleNimi} handleNumero={handleNumero} handleSubmit={handleSubmit} />
             <h2>Numerot</h2>
-            <NamesList listNames={listNames} />
+            <NamesList listNames={listNames} handleDelete={handleDelete} />
         </div>
     )
 }
