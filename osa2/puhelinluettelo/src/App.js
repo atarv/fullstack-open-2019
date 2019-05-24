@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import axios from 'axios'
 
 const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
     return (
@@ -10,7 +11,7 @@ const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
                 numero: <input onChange={handleNumero} />
             </div>
             <div>
-                <button type='submit'>lisää</button>
+                <button type="submit">lisää</button>
             </div>
         </form>
     )
@@ -37,12 +38,7 @@ const Person = ({ person }) => {
 }
 
 const App = () => {
-    const [persons, setPersons] = useState([
-        { name: 'Arto Hellas', number: '040-123456' },
-        { name: 'Martti Tienari', number: '040-123456' },
-        { name: 'Arto Järvinen', number: '040-123456' },
-        { name: 'Lea Kutvonen', number: '040-123456' }
-    ])
+    const [persons, setPersons] = useState([])
     const [newName, setNewName] = useState('')
     const [newNumber, setNumber] = useState('')
     const [searchString, setSearchString] = useState('')
@@ -72,6 +68,13 @@ const App = () => {
             setPersons(persons.concat({ name: newName, number: newNumber }))
         }
     }
+    const hook = () => {
+        axios.get('http://localhost:3001/persons').then(response => {
+            setPersons(response.data)
+        })
+    }
+
+    useEffect(hook, [])
 
     return (
         <div>
