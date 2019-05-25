@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import personService from './services/persons'
+import './App.css'
+
+const Notification = ({ message }) => {
+    if (!message) return undefined
+    return <div className="success">{message}</div>
+}
 
 const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
     return (
@@ -45,6 +51,7 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNumber] = useState('')
     const [searchString, setSearchString] = useState('')
+    const [errorMessage, setErrorMessage] = useState(undefined)
     const listNames = () => {
         console.log(persons)
 
@@ -105,6 +112,8 @@ const App = () => {
     return (
         <div>
             <h2>Puhelinluettelo</h2>
+            {/* <Notification message={errorMessage} /> */}
+            <Notification message={'Hello world'} />
             <Filter filterNames={filterNames} />
             <h2>Lisää uusi</h2>
             <Form handleNimi={handleNimi} handleNumero={handleNumero} handleSubmit={handleSubmit} />
