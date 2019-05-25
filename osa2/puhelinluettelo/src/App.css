@@ -3,8 +3,15 @@
   color: #22aa66;
   border: 2px solid #22aa66;
   border-radius: 4px;
+}
+
+.error {
+  background: gainsboro;
+  color: #aa2266;
+  border: 2px solid #aa2266;
+  border-radius: 4px;
   padding: 0.3em;
-  margin-bottom: 1em; 
+  margin: 0 1em 1em;
 }
 
 .App {
