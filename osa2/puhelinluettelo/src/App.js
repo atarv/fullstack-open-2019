@@ -11,7 +11,7 @@ const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
                 numero: <input onChange={handleNumero} />
             </div>
             <div>
-                <button type='submit'>lisää</button>
+                <button type="submit">lisää</button>
             </div>
         </form>
     )
@@ -33,7 +33,9 @@ const Person = ({ person, handleDelete }) => {
     return (
         <li key={person.id}>
             {person.name} {person.number}
-            <button key={'b' + person.id} onClick={() => handleDelete(person)}>poista</button>
+            <button key={'b' + person.id} onClick={() => handleDelete(person)}>
+                poista
+            </button>
         </li>
     )
 }
@@ -44,20 +46,23 @@ const App = () => {
     const [newNumber, setNumber] = useState('')
     const [searchString, setSearchString] = useState('')
     const listNames = () => {
+        console.log(persons)
+
         return persons.map(person =>
             person.name.toLowerCase().includes(searchString.toLowerCase()) ? (
-                <Person person={person} key={person.id} handleDelete={handleDelete} />
+                <Person person={person} key={person.id} handleDelete={handleDelete} />
             ) : (
                 undefined
             )
         )
     }
     const handleDelete = person => {
-        if (!window.confirm(`Poistetaanko ${person.name}?`))
-            return undefined
+        console.log('ennen', persons)
+        if (!window.confirm(`Poistetaanko ${person.name}?`)) return undefined
         personService.remove(person.id).then(() => {
             setPersons(persons.filter(p => p.id !== person.id))
         })
+        console.log('jälkeen', persons)
     }
     const handleNimi = event => {
         setNewName(event.target.value)
@@ -71,12 +76,22 @@ const App = () => {
     const handleSubmit = event => {
         event.preventDefault()
         const newPerson = { name: newName, number: newNumber }
-        if (persons.find(p => p.name === newName)) {
-            alert(`${newName} on jo olemassa`)
+        const existingPerson = persons.find(p => p.name === newName)
+        if (existingPerson) {
+            if (window.confirm(`${newName} on jo luettelossa. Korvataanko numero uudella?`)) {
+                newPerson.id = existingPerson.id
+                personService.replace(newPerson).then(response => {
+                    // etsitään vanha
+                    const existingIndex = persons.findIndex(p => p === existingPerson)
+                    // luodaan kopio listasta, koska React
+                    const altered = persons.concat()
+                    // vaihdetaan kopiossa uusi alkio vanhan tilalle
+                    altered[existingIndex] = newPerson
+                    setPersons(altered)
+                })
+            }
         } else {
-            personService
-                .post(newPerson)
-                .then(response => setPersons(persons.concat(response.data)))
+            personService.post(newPerson).then(response => setPersons(persons.concat(response)))
         }
     }
     const hook = () => {
@@ -94,7 +109,7 @@ const App = () => {
             <h2>Lisää uusi</h2>
             <Form handleNimi={handleNimi} handleNumero={handleNumero} handleSubmit={handleSubmit} />
             <h2>Numerot</h2>
-            <NamesList listNames={listNames} handleDelete={handleDelete} />
+            <NamesList listNames={listNames} handleDelete={handleDelete} />
         </div>
     )
 }
