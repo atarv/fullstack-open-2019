@@ -9,12 +9,17 @@ const getAll = () => {
 
 const post = newPerson => {
     const response = axios.post(`${baseURL}/persons`, newPerson)
-    return response.then(console.log('lähetetty', newPerson))
+    return response.then(response => response.data)
 }
 
 const remove = id => {
     const response = axios.delete(`${baseURL}/persons/${id}`)
-    return response
+    return response.then(response => response.data)
 }
 
-export default { getAll, post, remove }
+const replace = person => {
+    const response = axios.put(`${baseURL}/persons/${person.id}`, person)
+    return response.then(response => response.data)
+}
+
+export default { getAll, post, remove, replace }
