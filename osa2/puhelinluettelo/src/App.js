@@ -3,8 +3,9 @@ import personService from './services/persons'
 import './App.css'
 
 const Notification = ({ message }) => {
-    if (!message) return undefined
-    return <div className="success">{message}</div>
+    if (!message) return null
+    const type = !message.type ? 'success' : message.type
+    return <div className={type}>{message.text}</div>
 }
 
 const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
@@ -17,7 +18,7 @@ const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
                 numero: <input onChange={handleNumero} />
             </div>
             <div>
-                <button type="submit">lisää</button>
+                <button type='submit'>lisää</button>
             </div>
         </form>
     )
@@ -51,10 +52,8 @@ const App = () => {
     const [newName, setNewName] = useState('')
     const [newNumber, setNumber] = useState('')
     const [searchString, setSearchString] = useState('')
-    const [errorMessage, setErrorMessage] = useState(undefined)
+    const [message, setMessage] = useState(undefined)
     const listNames = () => {
-        console.log(persons)
-
         return persons.map(person =>
             person.name.toLowerCase().includes(searchString.toLowerCase()) ? (
                 <Person person={person} key={person.id} handleDelete={handleDelete} />
@@ -66,10 +65,17 @@ const App = () => {
     const handleDelete = person => {
         console.log('ennen', persons)
         if (!window.confirm(`Poistetaanko ${person.name}?`)) return undefined
-        personService.remove(person.id).then(() => {
-            setPersons(persons.filter(p => p.id !== person.id))
-        })
-        console.log('jälkeen', persons)
+        personService
+            .remove(person.id)
+            .then(() => {
+                setPersons(persons.filter(p => p.id !== person.id))
+            })
+            .then(() => setMessage({ text: `Poistettiin ${person.name}`, type: 'success' }))
+            .catch(() => {
+                setMessage({ text: `${person.name} oli jo poistettu palvelimelta`, type: 'error' })
+                setPersons(persons.filter(p => p.id !== person.id))
+            })
+        setTimeout(() => setMessage(null), 5000)
     }
     const handleNimi = event => {
         setNewName(event.target.value)
@@ -87,18 +93,35 @@ const App = () => {
         if (existingPerson) {
             if (window.confirm(`${newName} on jo luettelossa. Korvataanko numero uudella?`)) {
                 newPerson.id = existingPerson.id
-                personService.replace(newPerson).then(response => {
-                    // etsitään vanha
-                    const existingIndex = persons.findIndex(p => p === existingPerson)
-                    // luodaan kopio listasta, koska React
-                    const altered = persons.concat()
-                    // vaihdetaan kopiossa uusi alkio vanhan tilalle
-                    altered[existingIndex] = newPerson
-                    setPersons(altered)
-                })
+                personService
+                    .replace(newPerson)
+                    .then(() => {
+                        // etsitään vanha
+                        const existingIndex = persons.findIndex(p => p === existingPerson)
+                        // luodaan kopio listasta, koska React
+                        const altered = persons.concat()
+                        // vaihdetaan kopiossa uusi alkio vanhan tilalle
+                        altered[existingIndex] = newPerson
+                        setPersons(altered)
+                    })
+                    .then(() =>
+                        setMessage({
+                            text: `Päivitettiin henkilön ${newPerson.name} numeroksi ${
+                                newPerson.number
+                            }`,
+                            type: 'success'
+                        })
+                    )
+                    .catch(setMessage({ text: `Päivittäminen epäonnistui`, type: 'error' }))
+                setTimeout(() => setMessage(null), 5000)
             }
         } else {
-            personService.post(newPerson).then(response => setPersons(persons.concat(response)))
+            personService
+                .post(newPerson)
+                .then(response => setPersons(persons.concat(response)))
+                .then(() => setMessage({ text: `Lisättiin ${newPerson.name}`, type: 'success' }))
+                .catch(() => setMessage({ text: `Lisääminen epäonnistui`, type: 'error' }))
+            setTimeout(() => setMessage(null), 5000)
         }
     }
     const hook = () => {
@@ -112,8 +135,7 @@ const App = () => {
     return (
         <div>
             <h2>Puhelinluettelo</h2>
-            {/* <Notification message={errorMessage} /> */}
-            <Notification message={'Hello world'} />
+            <Notification message={message} />
             <Filter filterNames={filterNames} />
             <h2>Lisää uusi</h2>
             <Form handleNimi={handleNimi} handleNumero={handleNumero} handleSubmit={handleSubmit} />
