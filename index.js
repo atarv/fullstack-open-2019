@@ -2,9 +2,13 @@
 const express = require('express')
 const app = express()
 const bodyParser = require('body-parser')
+const morgan = require('morgan')
 
 app.use(bodyParser.json())
 
+morgan.token('body', (req, res) => JSON.stringify(req.body))
+
+app.use(morgan(':method :url :status :res[content-length] :response-time ms :body'))
 let persons = [
     {
         id: 1,
@@ -60,7 +64,7 @@ app.post('/api/persons', (req, res) => {
     if (persons.find(p => p.name === newPerson.name)) {
         return res.status(400).json({ error: 'Name must be unique' })
     } else if (!newPerson.name || !newPerson.number) {
-        return res.status(400).json({error: 'Person must have both a name and a number'})
+        return res.status(400).json({ error: 'Person must have both a name and a number' })
     }
 
     const newId = Math.ceil(Math.random() * 9000000)
