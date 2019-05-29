@@ -63,7 +63,6 @@ const App = () => {
         )
     }
     const handleDelete = person => {
-        console.log('ennen', persons)
         if (!window.confirm(`Poistetaanko ${person.name}?`)) return undefined
         personService
             .remove(person.id)
