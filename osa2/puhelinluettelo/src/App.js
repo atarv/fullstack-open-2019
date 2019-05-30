@@ -18,7 +18,7 @@ const Form = ({ handleNimi, handleNumero, handleSubmit }) => {
                 numero: <input onChange={handleNumero} />
             </div>
             <div>
-                <button type='submit'>lisää</button>
+                <button type="submit">lisää</button>
             </div>
         </form>
     )
@@ -119,7 +119,10 @@ const App = () => {
                 .post(newPerson)
                 .then(response => setPersons(persons.concat(response)))
                 .then(() => setMessage({ text: `Lisättiin ${newPerson.name}`, type: 'success' }))
-                .catch(() => setMessage({ text: `Lisääminen epäonnistui`, type: 'error' }))
+                .catch(err => {
+                    console.log(err.response.data)
+                    setMessage({ text: `Lisääminen epäonnistui`, type: 'error' })
+                })
             setTimeout(() => setMessage(null), 5000)
         }
     }
