@@ -1,22 +1,27 @@
 {
-  "name": "blogilista",
-  "version": "1.0.0",
-  "description": "Full-stack open 2019 kurssin 4. osan sovellus",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "watch": "nodemon index.js"
-  },
-  "author": "Aleksi Tarvainen",
-  "license": "ISC",
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^8.0.0",
-    "express": "^4.17.1",
-    "mongoose": "^5.5.11"
-  },
-  "devDependencies": {
-    "nodemon": "^1.19.1"
-  }
+    "name": "blogilista",
+    "version": "1.0.0",
+    "description": "Full-stack open 2019 kurssin 4. osan sovellus",
+    "main": "index.js",
+    "scripts": {
+        "start": "node index.js",
+        "watch": "nodemon index.js",
+        "test": "jest --verbose"
+    },
+    "author": "Aleksi Tarvainen",
+    "license": "ISC",
+    "dependencies": {
+        "cors": "^2.8.5",
+        "dotenv": "^8.0.0",
+        "express": "^4.17.1",
+        "mongoose": "^5.5.11"
+    },
+    "devDependencies": {
+        "eslint": "^5.16.0",
+        "jest": "^24.8.0",
+        "nodemon": "^1.19.1"
+    },
+    "jest": {
+        "testEnvironment": "node"
+    }
 }
