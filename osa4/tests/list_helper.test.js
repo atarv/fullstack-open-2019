@@ -114,7 +114,7 @@ describe('mostBlogs', () => {
 
     test('on empty list, return undefined', () => {
         const result = listHelper.mostBlogs([])
-        expect(result).toEqual(undefined)
+        expect(result).toBeUndefined()
     })
 })
 
@@ -126,6 +126,6 @@ describe('mostLikes', () => {
 
     test('if list is empty, return undefined', () => {
         const result = listHelper.mostLikes([])
-        expect(result).toEqual(undefined)
+        expect(result).toBeUndefined()
     })
 })
