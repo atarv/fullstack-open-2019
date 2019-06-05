@@ -1,4 +1,4 @@
-const mongsoose = require('mongoose')
+const mongoose = require('mongoose')
 const supertest = require('supertest')
 const app = require('../app')
 
@@ -123,5 +123,5 @@ test('non-existant deletes return 404', async () => {
 })
 
 afterAll(() => {
-    mongsoose.connection.close()
+    mongoose.connection.close()
 })
