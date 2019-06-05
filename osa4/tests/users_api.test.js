@@ -42,6 +42,40 @@ describe('with one user in database', () => {
             .expect('Content-Type', /application\/json/)
         expect(res.body.length).toEqual(1)
     })
+
+    test('adding user with too short name fails', async () => {
+        const usersBefore = await User.countDocuments({})
+        const shortUsername = {
+            username: 'sh',
+            name: 'Short Name',
+            password: 'verylongpassword'
+        }
+
+        await api
+            .post('/api/users')
+            .send(shortUsername)
+            .expect(400)
+
+        const usersAfter = await User.countDocuments({})
+        expect(usersBefore).toEqual(usersAfter)
+    })
+
+    test('adding user with too short password fails', async () => {
+        const usersBefore = await User.countDocuments({})
+        const shortPassword = {
+            username: 'ihazbadpass',
+            name: 'Name',
+            password: '12'
+        }
+
+        await api
+            .post('/api/users')
+            .send(shortPassword)
+            .expect(400)
+
+        const usersAfter = await User.countDocuments({})
+        expect(usersBefore).toEqual(usersAfter)
+    })
 })
 
 afterAll(() => {

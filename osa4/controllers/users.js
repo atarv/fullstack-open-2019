@@ -6,6 +6,7 @@ usersRouter.post('/', async (request, response) => {
     try {
         const body = request.body
         const saltRounds = 10
+        if (body.password.length < 3) throw 'too short password'
         const passwordHash = await bcrypt.hash(body.password, saltRounds)
 
         const user = new User({
@@ -16,13 +17,13 @@ usersRouter.post('/', async (request, response) => {
         const savedUser = await user.save()
         response.json(savedUser)
     } catch (e) {
-        response.status(401).send(e)
+        response.status(400).send(e)
     }
 })
 
 usersRouter.get('/', async (request, response) => {
     try {
-        const users = await User.find({})
+        const users = await User.find({}).populate('blogs', { userId: 0 })
         response.json(users.map(user => user.toJSON()))
     } catch (error) {
         response.status(500).send(error)
