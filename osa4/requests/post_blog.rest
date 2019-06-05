@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlVzZXJUZXN0IiwiaWQiOiI1Y2Y3NzgzY2ExNjkxNTFjZWJjYTRlODYiLCJpYXQiOjE1NTk3NDE4MDF9.pK5tipsZ_x-4CvX9k1CTHn_r9VMO9BTn7YAl1yGMC6U
 
 {
     "title": "Uuden blogin otsikko 3",
