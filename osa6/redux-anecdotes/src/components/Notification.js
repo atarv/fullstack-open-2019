@@ -1,12 +1,15 @@
 import React from 'react'
+import {} from '../reducers/notificationReducer'
 
-const Notification = () => {
+const Notification = props => {
+    const message = props.store.getState().notification
     const style = {
         border: 'solid',
         padding: 10,
         borderWidth: 1
     }
-    return <div style={style}>render here notification...</div>
+    if (message) return <div style={style}>{message}</div>
+    return <div />
 }
 
 export default Notification
