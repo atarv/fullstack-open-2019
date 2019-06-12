@@ -13,7 +13,7 @@ const reducer = combineReducers({
     filter: filterReducer
 })
 const store = createStore(reducer)
-// store.subscribe(() => console.log('subs', store.getState()))
+store.subscribe(() => console.log('subs', store.getState()))
 
 const render = () => {
     ReactDOM.render(
