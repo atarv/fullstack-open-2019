@@ -1,5 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
+import { Provider } from 'react-redux'
 import { createStore, combineReducers } from 'redux'
 import App from './App'
 import anecdoteReducer from './reducers/anecdoteReducer'
@@ -12,10 +13,15 @@ const reducer = combineReducers({
     filter: filterReducer
 })
 const store = createStore(reducer)
-store.subscribe(() => console.log('subs', store.getState()))
+// store.subscribe(() => console.log('subs', store.getState()))
 
 const render = () => {
-    ReactDOM.render(<App store={store} />, document.getElementById('root'))
+    ReactDOM.render(
+        <Provider store={store}>
+            <App store={store} />
+        </Provider>,
+        document.getElementById('root')
+    )
 }
 
 render()
