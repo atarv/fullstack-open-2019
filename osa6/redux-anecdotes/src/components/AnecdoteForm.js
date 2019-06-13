@@ -1,21 +1,14 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { addAnecdote } from '../reducers/anecdoteReducer'
-import { notify, hide } from '../reducers/notificationReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
 const AnecdoteForm = props => {
-    const showWithTimeout = (message, timeout = 5000) => {
-        props.notify(message)
-        setTimeout(() => {
-            props.hide()
-        }, timeout)
-    }
-
     const newAnecdote = async event => {
         event.preventDefault()
         const content = event.target.content.value
         props.addAnecdote(content)
-        showWithTimeout("Added new anecdote '" + content + "'")
+        props.setNotification(`Added new anecdote '${content}'`)
     }
 
     return (
@@ -34,8 +27,7 @@ const AnecdoteForm = props => {
 
 const mapDispatchToProps = {
     addAnecdote,
-    notify,
-    hide
+    setNotification
 }
 
 export default connect(
