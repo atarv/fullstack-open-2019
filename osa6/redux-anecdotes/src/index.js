@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import App from './App'
 import store from './store'
 
-store.subscribe(() => console.log('subs', store.getState())) // DEBUG
+store.subscribe(() => console.log('subs', store.getState()))
 
 const render = () => {
     ReactDOM.render(

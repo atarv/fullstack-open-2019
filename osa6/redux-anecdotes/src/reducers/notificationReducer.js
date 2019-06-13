@@ -1,24 +1,35 @@
 const initialState = null
 
-export const notify = message => {
+const notify = message => {
     return {
         type: 'SHOW',
         message
     }
 }
 
-export const hide = () => {
+const hide = () => {
     return {
         type: 'HIDE'
+    }
+}
+
+export const setNotification = (message, secondsVisible) => {
+    return async dispatch => {
+        await dispatch(notify(message))
+        await setTimeout(() => {
+            dispatch(hide())
+        }, secondsVisible * 1000)
     }
 }
 
 const reducer = (state = initialState, action) => {
     switch (action.type) {
         case 'SHOW':
-            return action.message
+            state = action.message
+            return state
         case 'HIDE':
-            return null
+            state = null
+            return state
         default:
             return initialState
     }

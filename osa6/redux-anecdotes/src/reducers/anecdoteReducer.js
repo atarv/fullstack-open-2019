@@ -29,12 +29,16 @@ export const initializeAnecdotes = () => {
     }
 }
 
-export const voteAnecdote = id => {
-    return {
-        type: 'VOTE',
-        data: {
-            id
-        }
+export const voteAnecdote = anecdote => {
+    return async dispatch => {
+        const updatedAnecdote = await anecdoteService.updateAnecdote(anecdote.id, {
+            ...anecdote,
+            votes: anecdote.votes + 1
+        })
+        dispatch({
+            type: 'VOTE',
+            data: updatedAnecdote
+        })
     }
 }
 
@@ -56,12 +60,9 @@ const reducer = (state = initialState, action) => {
             return action.data
         case 'VOTE':
             return [...state].map(anecdote =>
-                anecdote.id !== action.data.id
-                    ? anecdote
-                    : { ...anecdote, votes: anecdote.votes + 1 }
+                anecdote.id !== action.data.id ? anecdote : action.data
             )
         case 'ADD':
-            // const newAnecdote = action.data.content
             const newAnecdote = action.data.content
             return [...state, newAnecdote]
         default:
