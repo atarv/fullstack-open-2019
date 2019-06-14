@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { BrowserRouter as Router, Route, Link, Redirect, withRouter } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 
 const Menu = () => {
     const padding = {
@@ -139,6 +139,8 @@ const App = () => {
     const addNew = anecdote => {
         anecdote.id = (Math.random() * 10000).toFixed(0)
         setAnecdotes(anecdotes.concat(anecdote))
+        setNotification(`Added anecdote '${anecdote.content}'`)
+        setTimeout(() => setNotification(''), 10000)
     }
 
     const anecdoteById = id => anecdotes.find(a => a.id === id)
@@ -157,6 +159,7 @@ const App = () => {
     return (
         <div>
             <Router>
+                <div style={{ color: '#22aa22' }}>{notification}</div>
                 <h1>Software anecdotes</h1>
                 <Menu />
                 <Route exact path="/" render={() => <AnecdoteList anecdotes={anecdotes} />} />
