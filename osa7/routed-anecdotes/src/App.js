@@ -157,7 +157,7 @@ const App = () => {
     }
 
     return (
-        <div>
+        <div class="container">
             <Router>
                 <div style={{ color: '#22aa22' }}>{notification}</div>
                 <h1>Software anecdotes</h1>
