@@ -1,18 +1,19 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import BlogForm from './components/BlogForm'
 import blogService from './services/blogs'
 import loginService from './services/login'
-import Notifier from './components/Notifier'
+import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogsReducer'
+import { setNotification } from './reducers/notificationReducer'
 
-const App = () => {
-    const [blogs, setBlogs] = useState([])
+const App = props => {
     const [user, setUser] = useState(null)
     const [message, setMessage] = useState(null)
     const messageDelay = 3000
-
     const handleLogin = async (event, username, password) => {
         event.preventDefault()
         try {
@@ -37,10 +38,11 @@ const App = () => {
 
     const handleCreate = async (event, blog) => {
         try {
-            const response = await blogService.createBlog(blog, user.username)
-            console.log(response)
+            console.log('handleCreate', blog)
 
-            setMessage(`lisättiin uusi blogi ${response.title}`)
+            props.addBlog(blog, user.username)
+
+            setMessage(`lisättiin uusi blogi ${blog.title}`)
             setTimeout(() => {
                 setMessage(null)
             }, messageDelay)
@@ -53,15 +55,13 @@ const App = () => {
 
     const handleLike = async blog => {
         try {
-            const updatedBlog = { ...blog }
-            updatedBlog.likes = blog.likes + 1
-            updatedBlog.userId = blog.userId.id
-            const response = await blogService.updateBlog(updatedBlog)
-            if (response.status !== 204) {
-                throw new { message: 'Update failed', response }()
-            }
-            setMessage(`Tykkäsit blogia ${updatedBlog.title}`)
-            setTimeout(() => setMessage(null), messageDelay)
+            // Change populated field to id only, so that backend can
+            // handle it
+            blog.userId = blog.userId.id
+            props.likeBlog(blog)
+            props.setNotification(`Tykkäsit blogia ${blog.title}`, 5)
+            // setMessage(`Tykkäsit blogia ${blog.title}`)
+            // setTimeout(() => setMessage(null), messageDelay)
         } catch (exception) {
             console.log(exception)
             setMessage('Tykkäys epäonnistui')
@@ -72,7 +72,7 @@ const App = () => {
     const handleDelete = async blog => {
         if (window.confirm(`Haluatko varmasti poistaa blogin ${blog.title}`)) {
             try {
-                await blogService.deleteBlog(blog)
+                props.removeBlog(blog)
             } catch (exception) {
                 console.log(exception)
             }
@@ -81,10 +81,7 @@ const App = () => {
 
     // hakee blogit
     useEffect(() => {
-        blogService.getAll().then(blogs => {
-            blogs.sort((a, b) => b.likes - a.likes)
-            setBlogs(blogs)
-        })
+        props.initializeBlogs()
     }, [])
 
     // hakee mahdollisen jo kirjautuneen käyttäjän tiedot
@@ -100,7 +97,7 @@ const App = () => {
     if (user === null) {
         return (
             <div>
-                <Notifier message={message} />
+                <Notification message={message} />
                 <h2>Kirjautuminen</h2>
                 <LoginForm handleLogin={handleLogin} />
             </div>
@@ -109,7 +106,7 @@ const App = () => {
 
     return (
         <div>
-            <Notifier message={message} />
+            <Notification />
             <h2>Blogit</h2>
             <p>Kirjautuneena: {user.username}</p>
             <button onClick={handleLogout}>Kirjaudu ulos</button>
@@ -117,7 +114,7 @@ const App = () => {
             <Togglable buttonText="Uusi blogi">
                 <BlogForm handleCreate={handleCreate} />
             </Togglable>
-            {blogs.map(blog => {
+            {props.blogs.map(blog => {
                 const showRemove = user.name === blog.userId.name
                 return (
                     <Blog
@@ -133,4 +130,21 @@ const App = () => {
     )
 }
 
-export default App
+const mapStateToProps = ({ blogs }) => {
+    return {
+        blogs
+    }
+}
+
+const mapDispatchToProps = {
+    initializeBlogs,
+    addBlog,
+    removeBlog,
+    likeBlog,
+    setNotification
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)
