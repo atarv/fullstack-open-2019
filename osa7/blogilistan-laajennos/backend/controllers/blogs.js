@@ -8,8 +8,14 @@ blogsRouter.get('/', async (request, response) => {
     response.json(blogs.map(blog => blog.toJSON()))
 })
 
+blogsRouter.get('/:id', async (request, response) => {
+    const blog = await Blog.findById(request.params.id)
+    response.json(blog.toJSON())
+})
+
 blogsRouter.post('/', async (request, response) => {
     const body = request.body
+    console.log(body) // DEBUG
 
     try {
         const decodedToken = jwt.verify(request.token, process.env.SECRET)
@@ -33,7 +39,6 @@ blogsRouter.post('/', async (request, response) => {
         response.status(201).json(savedBlog.toJSON())
     } catch (e) {
         console.log(e)
-
         response.status(400).json(e)
     }
 })
@@ -60,9 +65,10 @@ blogsRouter.delete('/:id', async (request, response) => {
 
 blogsRouter.put('/:id', async (request, response) => {
     try {
-        await Blog.findByIdAndUpdate(request.params.id, request.body)
+        await Blog.findByIdAndUpdate(request.params.id, request.body, { new: true })
         response.status(204).end()
     } catch (error) {
+        console.log(error)
         response.status(404).end()
     }
 })

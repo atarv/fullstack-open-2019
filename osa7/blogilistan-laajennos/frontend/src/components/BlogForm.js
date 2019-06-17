@@ -2,9 +2,6 @@ import React from 'react'
 import { useField, omit } from '../hooks'
 
 const BlogForm = props => {
-    // const [title, setTitle] = useState('')
-    // const [author, setAuthor] = useState('')
-    // const [url, setUrl] = useState('')
     const title = omit('reset', useField('text'))
     const author = omit('reset', useField('text'))
     const url = omit('reset', useField('text'))
@@ -26,7 +23,17 @@ const BlogForm = props => {
                 <input {...url} />
             </label>
             <br />
-            <button onClick={e => props.handleCreate(e, { title, author, url })}>Luo</button>
+            <button
+                onClick={e =>
+                    props.handleCreate(e, {
+                        title: title.value,
+                        author: author.value,
+                        url: url.value
+                    })
+                }
+            >
+                Luo
+            </button>
         </div>
     )
 }
