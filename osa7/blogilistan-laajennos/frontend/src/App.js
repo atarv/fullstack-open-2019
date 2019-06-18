@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -9,11 +9,11 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
+import { login, logout } from './reducers/loginReducer'
 
 const App = props => {
-    const [user, setUser] = useState(null)
-    const [message, setMessage] = useState(null)
-    const messageDelay = 3000
+    const user = props.loggedUser
+    const messageDelay = 5 // in seconds
     const handleLogin = async (event, username, password) => {
         event.preventDefault()
         try {
@@ -23,33 +23,25 @@ const App = props => {
             })
             window.localStorage.setItem('loggedBlogsUser', JSON.stringify(user))
             blogService.setToken(user.token)
-            setUser(user)
+            props.login(user)
         } catch (exception) {
-            setMessage('Virheellinen käyttäjänimi tai salasana')
-            setTimeout(() => setMessage(null), messageDelay)
+            props.setNotification('Virheellinen käyttäjänimi tai salasana', messageDelay)
         }
     }
 
     const handleLogout = async () => {
         window.localStorage.removeItem('loggedBlogsUser')
         blogService.unsetToken()
-        setUser(null)
+        props.logout()
     }
 
     const handleCreate = async (event, blog) => {
         try {
-            console.log('handleCreate', blog)
-
             props.addBlog(blog, user.username)
-
-            setMessage(`lisättiin uusi blogi ${blog.title}`)
-            setTimeout(() => {
-                setMessage(null)
-            }, messageDelay)
+            props.setNotification(`lisättiin uusi blogi ${blog.title}`, messageDelay)
         } catch (exception) {
             console.log(exception)
-            setMessage('Blogin lisääminen epäonnistui')
-            setTimeout(() => setMessage(null), messageDelay)
+            props.setNotification('Blogin lisääminen epäonnistui', messageDelay)
         }
     }
 
@@ -59,13 +51,10 @@ const App = props => {
             // handle it
             blog.userId = blog.userId.id
             props.likeBlog(blog)
-            props.setNotification(`Tykkäsit blogia ${blog.title}`, 5)
-            // setMessage(`Tykkäsit blogia ${blog.title}`)
-            // setTimeout(() => setMessage(null), messageDelay)
+            props.setNotification(`Tykkäsit blogia ${blog.title}`, messageDelay)
         } catch (exception) {
             console.log(exception)
-            setMessage('Tykkäys epäonnistui')
-            setTimeout(() => setMessage(null), messageDelay)
+            props.setNotification('Tykkäys epäonnistui', messageDelay)
         }
     }
 
@@ -73,8 +62,10 @@ const App = props => {
         if (window.confirm(`Haluatko varmasti poistaa blogin ${blog.title}`)) {
             try {
                 props.removeBlog(blog)
+                props.setNotification(`Poistettiin blogi ${blog.title}`, messageDelay)
             } catch (exception) {
                 console.log(exception)
+                props.setNotification('Positaminen epäonnistui')
             }
         }
     }
@@ -89,15 +80,15 @@ const App = props => {
         const loggedUserJSON = window.localStorage.getItem('loggedBlogsUser')
         if (loggedUserJSON) {
             const user = JSON.parse(loggedUserJSON)
-            setUser(user)
             blogService.setToken(user.token)
+            props.login(user)
         }
     }, [])
 
-    if (user === null) {
+    if (user === null || user === undefined) {
         return (
             <div>
-                <Notification message={message} />
+                <Notification />
                 <h2>Kirjautuminen</h2>
                 <LoginForm handleLogin={handleLogin} />
             </div>
@@ -130,9 +121,10 @@ const App = props => {
     )
 }
 
-const mapStateToProps = ({ blogs }) => {
+const mapStateToProps = ({ blogs, loggedUser }) => {
     return {
-        blogs
+        blogs,
+        loggedUser
     }
 }
 
@@ -141,7 +133,9 @@ const mapDispatchToProps = {
     addBlog,
     removeBlog,
     likeBlog,
-    setNotification
+    setNotification,
+    login,
+    logout
 }
 
 export default connect(
