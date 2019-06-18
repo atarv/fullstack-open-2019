@@ -9,6 +9,7 @@ import loginService from './services/login'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UsersList from './components/UsersList'
+import User from './components/User'
 import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { login, logout } from './reducers/loginReducer'
@@ -130,16 +131,22 @@ const App = props => {
                         )}
                     />
                     <Route exact path="/users" render={() => <UsersList />} />
+                    <Route
+                        exact
+                        path="/users/:id"
+                        render={({ match }) => <User id={match.params.id} />}
+                    />
                 </div>
             </Router>
         </div>
     )
 }
 
-const mapStateToProps = ({ blogs, loggedUser }) => {
+const mapStateToProps = ({ blogs, loggedUser, users }) => {
     return {
         blogs,
-        loggedUser
+        loggedUser,
+        users
     }
 }
 
