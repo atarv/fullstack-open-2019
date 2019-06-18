@@ -30,4 +30,14 @@ usersRouter.get('/', async (request, response) => {
     }
 })
 
+usersRouter.get('/:id', async (request, response) => {
+    try {
+        const user = await User.findById(request.params.id).populate('blogs', { userId: 0 })
+        console.log(user)
+        response.json(user)
+    } catch (error) {
+        response.status(500).send(error)
+    }
+})
+
 module.exports = usersRouter
