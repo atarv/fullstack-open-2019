@@ -33,8 +33,6 @@ export const removeBlog = blog => {
 }
 
 export const likeBlog = blog => {
-    console.log(blog)
-
     blog = { ...blog, likes: blog.likes + 1 }
     return async dispatch => {
         await blogService.updateBlog(blog)
