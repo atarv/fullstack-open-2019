@@ -8,7 +8,6 @@ const UsersList = props => {
     useEffect(() => {
         const initUsers = async () => {
             const response = await usersService.getAll()
-            console.log('users effect', response)
             props.setUsers(response)
         }
         initUsers()

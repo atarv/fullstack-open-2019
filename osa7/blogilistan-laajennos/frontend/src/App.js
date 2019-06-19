@@ -10,6 +10,7 @@ import Notification from './components/Notification'
 import Togglable from './components/Togglable'
 import UsersList from './components/UsersList'
 import User from './components/User'
+import SingleBlog from './components/SingleBlog'
 import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { login, logout } from './reducers/loginReducer'
@@ -52,7 +53,6 @@ const App = props => {
         try {
             // Change populated field to id only, so that backend can
             // handle it
-            blog.userId = blog.userId.id
             props.likeBlog(blog)
             props.setNotification(`Tykkäsit blogia ${blog.title}`, messageDelay)
         } catch (exception) {
@@ -116,16 +116,7 @@ const App = props => {
                                     <BlogForm handleCreate={handleCreate} />
                                 </Togglable>
                                 {props.blogs.map(blog => {
-                                    const showRemove = user.name === blog.userId.name
-                                    return (
-                                        <Blog
-                                            key={blog.id}
-                                            blog={blog}
-                                            handleLike={handleLike}
-                                            handleDelete={handleDelete}
-                                            showRemove={showRemove}
-                                        />
-                                    )
+                                    return <Blog key={blog.id} blog={blog} />
                                 })}
                             </div>
                         )}
@@ -135,6 +126,16 @@ const App = props => {
                         exact
                         path="/users/:id"
                         render={({ match }) => <User id={match.params.id} />}
+                    />
+                    <Route
+                        exact
+                        path="/blogs/:id"
+                        render={({ match }) => (
+                            <SingleBlog
+                                blog={props.blogs.filter(blog => blog.id === match.params.id)[0]}
+                                handleLike={handleLike}
+                            />
+                        )}
                     />
                 </div>
             </Router>
