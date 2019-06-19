@@ -1,29 +1,28 @@
 import React from 'react'
 import { useField, omit } from '../hooks'
+import { Input, Button, Icon } from 'semantic-ui-react'
 
 const BlogForm = props => {
     const title = omit('reset', useField('text'))
     const author = omit('reset', useField('text'))
     const url = omit('reset', useField('text'))
 
+    const inputStyle = {
+        marginBottom: '0.5em'
+    }
+
     return (
-        <div>
-            <label>
-                Otsikko
-                <input {...title} />
-            </label>
+        <div style={{ margin: '1em' }}>
+            <Input label="Otsikko" {...title} style={inputStyle} />
             <br />
-            <label>
-                Tekijä
-                <input {...author} />
-            </label>
+            <Input label="Tekijä" {...author} style={inputStyle} />
             <br />
-            <label>
-                URL
-                <input {...url} />
-            </label>
+            <Input label="URL" {...url} style={inputStyle} />
             <br />
-            <button
+            <Button
+                animated
+                basic
+                color="grey"
                 onClick={e =>
                     props.handleCreate(e, {
                         title: title.value,
@@ -32,8 +31,11 @@ const BlogForm = props => {
                     })
                 }
             >
-                Luo
-            </button>
+                <Button.Content visible>
+                    <Icon name="arrow right" />
+                </Button.Content>
+                <Button.Content hidden>Luo</Button.Content>
+            </Button>
         </div>
     )
 }

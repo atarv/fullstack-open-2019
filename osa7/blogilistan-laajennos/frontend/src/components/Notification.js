@@ -1,11 +1,12 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { setNotification } from '../reducers/notificationReducer'
+import { Message } from 'semantic-ui-react'
 
 const Notification = ({ message }) => {
     if (message === null) return <></>
 
-    return <div>{message}</div>
+    return message && <Message success>{message}</Message>
 }
 
 const mapStateToProps = state => {

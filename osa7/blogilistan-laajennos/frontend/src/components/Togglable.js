@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { Button, Icon } from 'semantic-ui-react'
 
 const Togglable = props => {
     const [visible, setVisible] = useState(false)
@@ -13,11 +14,16 @@ const Togglable = props => {
     return (
         <div>
             <div style={hideWhenVisible}>
-                <button onClick={toggelVisibility}>{props.buttonText}</button>
+                <Button onClick={toggelVisibility}>{props.buttonText}</Button>
             </div>
             <div style={showWhenVisible}>
                 {props.children}
-                <button onClick={toggelVisibility}>Cancel</button>
+                <Button animated="fade" onClick={toggelVisibility}>
+                    <Button.Content hidden>Piilota</Button.Content>
+                    <Button.Content visible>
+                        <Icon name="hide" />
+                    </Button.Content>
+                </Button>
             </div>
         </div>
     )
