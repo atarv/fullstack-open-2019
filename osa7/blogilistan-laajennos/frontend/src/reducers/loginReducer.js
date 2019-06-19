@@ -8,8 +8,6 @@ export const login = user => {
 export const logout = () => ({ type: 'LOGOUT' })
 
 const reducer = (state = null, action) => {
-    // console.log('loginReducer', state, action)
-
     switch (action.type) {
     case 'LOGIN':
         return action.user
