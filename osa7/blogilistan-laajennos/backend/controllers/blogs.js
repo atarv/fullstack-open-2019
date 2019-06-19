@@ -75,8 +75,8 @@ blogsRouter.put('/:id', async (request, response) => {
 
 blogsRouter.post('/:id/comments', async (request, response) => {
     const body = request.body
-    console.log(body)
     try {
+        if (!body.comment) throw { error: 'Empty comments are not allowed' }
         const updatedBlog = await Blog.findByIdAndUpdate(
             request.params.id,
             {
