@@ -68,8 +68,20 @@ const App = props => {
                 props.setNotification(`Poistettiin blogi ${blog.title}`, messageDelay)
             } catch (exception) {
                 console.log(exception)
-                props.setNotification('Positaminen epäonnistui')
+                props.setNotification('Poistaminen epäonnistui', messageDelay)
             }
+        }
+    }
+
+    const handleComment = async (comment, blogId) => {
+        console.log('comment', comment, blogId) // DEBUG
+        try {
+            const res = await blogService.createComment(blogId, comment)
+            console.log(res) // DEBUG
+            props.setNotification(`Lisäsit kommentin blogiin ${res.title}`, messageDelay)
+        } catch (error) {
+            console.log(error)
+            props.setNotification('Kommentin lisääminen epäonnistui', messageDelay)
         }
     }
 
@@ -144,6 +156,7 @@ const App = props => {
                             <SingleBlog
                                 blog={props.blogs.filter(blog => blog.id === match.params.id)[0]}
                                 handleLike={handleLike}
+                                handleComment={handleComment}
                             />
                         )}
                     />

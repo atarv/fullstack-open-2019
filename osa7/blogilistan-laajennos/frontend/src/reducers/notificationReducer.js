@@ -1,6 +1,6 @@
 export const clearNotification = () => ({ type: 'CLEAR' })
 
-export const setNotification = (message, seconds) => {
+export const setNotification = (message, seconds = 5) => {
     return dispatch => {
         dispatch({
             type: 'SET',

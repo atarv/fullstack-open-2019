@@ -2,9 +2,6 @@ import React from 'react'
 import { useField, omit } from '../hooks'
 
 const LoginForm = props => {
-    // const [username, setUsername] = useState(props.username ? props.username : '')
-    // const [password, setPassword] = useState(props.password ? props.password : '')
-    // const omit = (prop, { [prop]: _, ...rest }) => rest
     const username = omit('reset', useField('text'))
     const password = omit('reset', useField('password'))
 
