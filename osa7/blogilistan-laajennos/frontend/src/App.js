@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
@@ -102,10 +102,20 @@ const App = props => {
         <div>
             <Router>
                 <div>
+                    <div
+                        style={{
+                            display: 'block',
+                            backgroundColor: '#DDE0EF',
+                            padding: '0.4rem'
+                        }}
+                    >
+                        <Link to="/">Blogit</Link>
+                        <Link to="/users">Käyttäjät</Link>
+                        <span>Kirjautuneena: {user.username}</span>
+                        <button onClick={handleLogout}>Kirjaudu ulos</button>
+                    </div>
                     <Notification />
                     <h2>Blogit</h2>
-                    <p>Kirjautuneena: {user.username}</p>
-                    <button onClick={handleLogout}>Kirjaudu ulos</button>
                     <Route
                         exact
                         path="/"
