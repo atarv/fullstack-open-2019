@@ -1,26 +1,31 @@
 import React from 'react'
 import { useField, omit } from '../hooks'
+import { Container, Form, Button } from 'semantic-ui-react'
 
 const LoginForm = props => {
     const username = omit('reset', useField('text'))
     const password = omit('reset', useField('password'))
 
     return (
-        <div>
-            <form onSubmit={e => props.handleLogin(e, username.value, password.value)}>
-                <label>
-                    käyttäjä <input {...username} />
-                </label>
-                <br />
+        <Container>
+            <Form onSubmit={e => props.handleLogin(e, username.value, password.value)}>
+                <Form.Field>
+                    <label>
+                        käyttäjä <input {...username} />
+                    </label>
+                    {/* <br /> */}
+                </Form.Field>
                 <br />
                 <label>
                     salasana <input {...password} />
                 </label>
                 <br />
                 <br />
-                <button>Kirjaudu sisään</button>
-            </form>
-        </div>
+                <Button fluid={true} primary={true}>
+                    Kirjaudu sisään
+                </Button>
+            </Form>
+        </Container>
     )
 }
 

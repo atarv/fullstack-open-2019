@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { connect } from 'react-redux'
 import usersService from '../services/users'
 import { setUsers } from '../reducers/usersReducer'
+import { Table } from 'semantic-ui-react'
 
 const UsersList = props => {
     useEffect(() => {
@@ -16,24 +17,24 @@ const UsersList = props => {
     return (
         <div>
             <h2>Käyttäjät</h2>
-            <table>
-                <tbody>
-                    <tr>
-                        <th>Nimi</th>
-                        <th>Luotuja blogeja</th>
-                    </tr>
+            <Table celled>
+                <Table.Body>
+                    <Table.Row>
+                        <Table.HeaderCell>Nimi</Table.HeaderCell>
+                        <Table.HeaderCell>Luotuja blogeja</Table.HeaderCell>
+                    </Table.Row>
                     {props.users.map(user => {
                         return (
-                            <tr key={user.id}>
+                            <Table.Row key={user.id}>
                                 <td>
                                     <Link to={`users/${user.id}`}>{user.name}</Link>
                                 </td>
                                 <td>{user.blogs.length}</td>
-                            </tr>
+                            </Table.Row>
                         )
                     })}
-                </tbody>
-            </table>
+                </Table.Body>
+            </Table>
         </div>
     )
 }

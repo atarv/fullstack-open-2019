@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom'
 import usersService from '../services/users'
+import { List, Header, Icon } from 'semantic-ui-react'
 
 const User = ({ id }) => {
     const [user, setUser] = useState(null)
@@ -15,15 +17,22 @@ const User = ({ id }) => {
 
     return (
         <div>
-            <h2>{user.name}</h2>
-            <h2>Lisätyt blogit</h2>
-            <ul>
+            <Header>
+                <Icon name="user" />
+                {user.name}
+            </Header>
+            <Header>Lisätyt blogit</Header>
+            <List bulleted={true} divided size="large">
                 {user.blogs
                     ? user.blogs.map(blog => {
-                        return <li key={blog.id}>{blog.title}</li>
+                        return (
+                            <List.Item key={blog.id}>
+                                <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+                            </List.Item>
+                        )
                     })
                     : null}
-            </ul>
+            </List>
         </div>
     )
 }

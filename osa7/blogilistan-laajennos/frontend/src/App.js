@@ -14,6 +14,7 @@ import SingleBlog from './components/SingleBlog'
 import { initializeBlogs, addBlog, removeBlog, likeBlog } from './reducers/blogsReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { login, logout } from './reducers/loginReducer'
+import { Container, Header, Menu, Icon, ItemGroup } from 'semantic-ui-react'
 
 const App = props => {
     const user = props.loggedUser
@@ -61,17 +62,17 @@ const App = props => {
         }
     }
 
-    const handleDelete = async blog => {
-        if (window.confirm(`Haluatko varmasti poistaa blogin ${blog.title}`)) {
-            try {
-                props.removeBlog(blog)
-                props.setNotification(`Poistettiin blogi ${blog.title}`, messageDelay)
-            } catch (exception) {
-                console.log(exception)
-                props.setNotification('Poistaminen epäonnistui', messageDelay)
-            }
-        }
-    }
+    // const handleDelete = async blog => {
+    //     if (window.confirm(`Haluatko varmasti poistaa blogin ${blog.title}`)) {
+    //         try {
+    //             props.removeBlog(blog)
+    //             props.setNotification(`Poistettiin blogi ${blog.title}`, messageDelay)
+    //         } catch (exception) {
+    //             console.log(exception)
+    //             props.setNotification('Poistaminen epäonnistui', messageDelay)
+    //         }
+    //     }
+    // }
 
     const handleComment = async (comment, blogId) => {
         console.log('comment', comment, blogId) // DEBUG
@@ -104,42 +105,57 @@ const App = props => {
         return (
             <div>
                 <Notification />
-                <h2>Kirjautuminen</h2>
+                <Header size="huge" textAlign="center">
+                    Kirjautuminen
+                </Header>
                 <LoginForm handleLogin={handleLogin} />
             </div>
         )
     }
 
     return (
-        <div>
+        <Container>
             <Router>
                 <div>
-                    <div
-                        style={{
-                            display: 'block',
-                            backgroundColor: '#DDE0EF',
-                            padding: '0.4rem'
-                        }}
+                    <Menu
+                    // style={{
+                    //     display: 'block',
+                    //     backgroundColor: '#DDE0EF',
+                    //     padding: '0.4rem'
+                    // }}
                     >
-                        <Link to="/">Blogit</Link>
-                        <Link to="/users">Käyttäjät</Link>
-                        <span>Kirjautuneena: {user.username}</span>
-                        <button onClick={handleLogout}>Kirjaudu ulos</button>
-                    </div>
+                        <Menu.Item>
+                            <Link to="/">Blogit</Link>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <Link to="/users">Käyttäjät</Link>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <span>Kirjautuneena: {user.username}</span>
+                        </Menu.Item>
+                        <Menu.Item onClick={handleLogout}>
+                            <Icon name="log out" />
+                            Kirjaudu ulos
+                        </Menu.Item>
+                    </Menu>
                     <Notification />
-                    <h2>Blogit</h2>
+                    <Header size="huge" textAlign="center" dividing>
+                        Blogi App
+                    </Header>
                     <Route
                         exact
                         path="/"
                         render={() => (
                             <div>
-                                <h3>Luo uusi</h3>
+                                <Header>Luo uusi</Header>
                                 <Togglable buttonText="Uusi blogi">
                                     <BlogForm handleCreate={handleCreate} />
                                 </Togglable>
-                                {props.blogs.map(blog => {
-                                    return <Blog key={blog.id} blog={blog} />
-                                })}
+                                <ItemGroup link divided>
+                                    {props.blogs.map(blog => {
+                                        return <Blog key={blog.id} blog={blog} />
+                                    })}
+                                </ItemGroup>
                             </div>
                         )}
                     />
@@ -162,7 +178,7 @@ const App = props => {
                     />
                 </div>
             </Router>
-        </div>
+        </Container>
     )
 }
 
