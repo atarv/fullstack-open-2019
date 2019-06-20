@@ -142,7 +142,9 @@ const resolvers = {
                 return book
             } else {
                 // new author
-                const author = { author: args.author, born: null, id: uuid() }
+                const author = { name: args.author, born: null, id: uuid() }
+                console.log('author object', author)
+
                 authors = authors.concat(author)
 
                 const book = { ...args, id: uuid() }
