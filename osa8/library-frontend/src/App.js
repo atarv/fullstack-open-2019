@@ -19,9 +19,13 @@ const ALL_BOOKS = gql`
     {
         allBooks {
             title
+<<<<<<< HEAD
             author {
                 name
             }
+=======
+            author
+>>>>>>> 2825b4a507f4ace26e91e59f62a188055926d17b
             published
         }
     }
