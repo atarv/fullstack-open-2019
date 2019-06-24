@@ -106,7 +106,7 @@ const typeDefs = gql`
     }
     type Mutation {
         addBook(title: String!, author: String!, published: Int!, genres: [String]!): Book
-        editAuthor(name: String, setBornTo: Int): Author
+        editAuthor(name: String!, setBornTo: Int!): Author
     }
 `
 
@@ -143,8 +143,6 @@ const resolvers = {
             } else {
                 // new author
                 const author = { name: args.author, born: null, id: uuid() }
-                console.log('author object', author)
-
                 authors = authors.concat(author)
 
                 const book = { ...args, id: uuid() }
@@ -154,13 +152,11 @@ const resolvers = {
         },
         editAuthor: (root, args) => {
             let authorToModify = authors.find(author => author.name === args.name)
-            console.log(authors)
             if (authorToModify) {
                 authorToModify.born = args.setBornTo
                 authors = authors.map(author =>
                     author.name === authorToModify.name ? authorToModify : author
                 )
-
                 return authorToModify
             }
             return null

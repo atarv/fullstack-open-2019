@@ -36,6 +36,16 @@ const ADD_BOOK = gql`
     }
 `
 
+const SET_BIRTH_YEAR = gql`
+    mutation editAuthor($name: String!, $born: Int!) {
+        editAuthor(name: $name, setBornTo: $born) {
+            name
+            born
+            bookCount
+        }
+    }
+`
+
 const App = () => {
     const [page, setPage] = useState('authors')
 
@@ -49,6 +59,10 @@ const App = () => {
         onError: handleError,
         refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
     })
+    const setBirthYear = useMutation(SET_BIRTH_YEAR, {
+        onError: handleError,
+        refetchQueries: [{ query: ALL_AUTHORS }]
+    })
 
     return (
         <div>
@@ -58,7 +72,7 @@ const App = () => {
                 <button onClick={() => setPage('add')}>add book</button>
             </div>
 
-            <Authors show={page === 'authors'} result={authorsQuery} />
+            <Authors show={page === 'authors'} result={authorsQuery} setBirthYear={setBirthYear} />
 
             <Books show={page === 'books'} result={booksQuery} />
 
