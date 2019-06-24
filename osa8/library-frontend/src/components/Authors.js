@@ -1,4 +1,5 @@
 import React from 'react'
+import AuthorEditForm from './AuthorEditForm'
 
 const Authors = props => {
     if (!props.show) {
@@ -33,6 +34,7 @@ const Authors = props => {
                     ))}
                 </tbody>
             </table>
+            <AuthorEditForm setBirthYear={props.setBirthYear} authors={result.data.allAuthors} />
         </div>
     )
 }
