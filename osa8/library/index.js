@@ -65,7 +65,6 @@ const resolvers = {
                 return Book.find({ author: author.id, genres: { $in: args.genre } })
             } else if (args.author) {
                 const author = await Author.findOne({ name: args.author })
-                console.log('author', author)
                 return Book.find({ author: author.id })
             } else if (args.genre) {
                 return Book.find({ genres: { $in: args.genre } })
@@ -97,7 +96,6 @@ const resolvers = {
                 let savedAuthor = null
                 try {
                     savedAuthor = await newAuthor.save()
-                    console.log('savedAuthor', savedAuthor) // DEBUG
                 } catch (error) {
                     throw new UserInputError(error.message, {
                         invalidArgs: args
@@ -114,7 +112,7 @@ const resolvers = {
                 }
             }
         },
-        editAuthor: (root, args) => {
+        editAuthor: (root, args, context) => {
             if (!context.currentUser) {
                 throw new UserInputError('Unauthorized')
             }
@@ -165,6 +163,7 @@ const server = new ApolloServer({
         if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
             const decodedToken = jwt.verify(authorization.substring(7), JWT_SECRET)
             const currentUser = await User.findById(decodedToken.id)
+
             return { currentUser }
         }
     }

@@ -1,13 +1,12 @@
 import React, { useState } from 'react'
 
 const AuthorEditForm = props => {
+    if (!localStorage.getItem('book-app-user-token')) return null
     const [name, setName] = useState('')
     const [born, setBorn] = useState('')
 
     const submit = async e => {
         e.preventDefault()
-        console.log('submit edit', name, born, parseInt(born))
-
         await props.setBirthYear({
             variables: { name, born: parseInt(born) }
         })
