@@ -1,20 +1,47 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 const Books = props => {
     const initialFilter = props.filter || ''
     const [genreFilter, setGenreFilter] = useState(initialFilter)
+    const [genres, setGenres] = useState([])
+    const [books, setBooks] = useState([])
+    const result = props.booksQuery
+
+    useEffect(() => {
+        // fetch books in given genre
+        props.client
+            .query({
+                query: props.booksQuery,
+                variables: {
+                    genre: genreFilter
+                }
+            })
+            .then(res => setBooks(res.data.allBooks))
+        // fetch genres
+        props.client
+            .query({
+                query: props.genreQuery,
+                variables: {}
+            })
+            .then(res =>
+                setGenres(
+                    Array.from(
+                        new Set(
+                            res.data.allBooks.reduce((prev, cur) => prev.concat(cur.genres), [])
+                        )
+                    )
+                )
+            )
+            .catch(err => console.log('vituks meni:', err))
+    }, [genreFilter, props.genreQuery, props.booksQuery])
+
     if (!props.show) {
         return null
     }
 
-    const result = props.result
-
     if (result.loading) return <div>Loading...</div>
 
     if (result.error) return <div>Error fetching books</div>
-
-    const books = result.data.allBooks
-    const genres = new Set(books.reduce((prev, cur) => prev.concat(cur.genres), []))
 
     return (
         <div>
@@ -27,29 +54,17 @@ const Books = props => {
                         <th>published</th>
                     </tr>
                     {books.map(a => {
-                        if (genreFilter) {
-                            if (a.genres.includes(genreFilter)) {
-                                return (
-                                    <tr key={a.title}>
-                                        <td>{a.title}</td>
-                                        <td>{a.author.name}</td>
-                                        <td>{a.published}</td>
-                                    </tr>
-                                )
-                            }
-                        } else {
-                            return (
-                                <tr key={a.title}>
-                                    <td>{a.title}</td>
-                                    <td>{a.author.name}</td>
-                                    <td>{a.published}</td>
-                                </tr>
-                            )
-                        }
+                        return (
+                            <tr key={a.title}>
+                                <td>{a.title}</td>
+                                <td>{a.author.name}</td>
+                                <td>{a.published}</td>
+                            </tr>
+                        )
                     })}
                 </tbody>
             </table>
-            {Array.from(genres).map(genre => (
+            {genres.map(genre => (
                 <button key={genre} onClick={() => setGenreFilter(genre)}>
                     {genre}
                 </button>

@@ -1,5 +1,4 @@
 import React from 'react'
-import Books from './Books'
 
 const Recommendations = props => {
     if (!props.show) return null

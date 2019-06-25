@@ -17,19 +17,6 @@ const ALL_AUTHORS = gql`
     }
 `
 
-const ALL_BOOKS = gql`
-    {
-        allBooks {
-            title
-            author {
-                name
-            }
-            published
-            genres
-        }
-    }
-`
-
 const ADD_BOOK = gql`
     mutation addBook($title: String!, $author: String!, $published: Int!, $genres: [String]!) {
         addBook(title: $title, author: $author, published: $published, genres: $genres) {
@@ -70,6 +57,27 @@ const GET_USER = gql`
     }
 `
 
+const GENRES = gql`
+    {
+        allBooks {
+            genres
+        }
+    }
+`
+
+const BOOKS_BY_GENRE = gql`
+    query allBooks($genre: String! = "") {
+        allBooks(genre: $genre) {
+            title
+            author {
+                name
+            }
+            published
+            genres
+        }
+    }
+`
+
 const App = () => {
     const [page, setPage] = useState('authors')
     const [token, setToken] = useState(null)
@@ -84,11 +92,11 @@ const App = () => {
 
     const client = useApolloClient()
     const authorsQuery = useQuery(ALL_AUTHORS)
-    const booksQuery = useQuery(ALL_BOOKS)
+    const booksQuery = useQuery(BOOKS_BY_GENRE)
     const user = useQuery(GET_USER)
     const addBook = useMutation(ADD_BOOK, {
         onError: handleError,
-        refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }]
+        refetchQueries: [{ query: BOOKS_BY_GENRE }, { query: ALL_AUTHORS }, { query: GENRES }]
     })
     const setBirthYear = useMutation(SET_BIRTH_YEAR, {
         onError: handleError,
@@ -124,7 +132,12 @@ const App = () => {
 
             <Authors show={page === 'authors'} result={authorsQuery} setBirthYear={setBirthYear} />
 
-            <Books show={page === 'books'} result={booksQuery} />
+            <Books
+                show={page === 'books'}
+                booksQuery={BOOKS_BY_GENRE}
+                client={client}
+                genreQuery={GENRES}
+            />
 
             <NewBook show={page === 'add'} addBook={addBook} />
 
